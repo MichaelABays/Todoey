@@ -19,26 +19,38 @@ class CategoryTableViewController: UITableViewController {
         
         loadCategories()
     }
-        //MARK: - tableview data methods
+    //MARK: - tableview data methods
+    
+    
+    //Mark: - data manipulation methods
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categoryArray.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        
+        cell.textLabel?.text = categoryArray[indexPath.row].name
         
         
-        //Mark: - data manipulation methods
+        return cell
+    }
+    
+    //MARK: - tableview delegate methods
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
         
-        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return categoryArray.count
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
         }
-        
-        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-            
-            cell.textLabel?.text = categoryArray[indexPath.row].name
-            
-            
-            return cell
-        }
-        
-        
+    }
     
     
     func saveCategories() {
@@ -61,7 +73,7 @@ class CategoryTableViewController: UITableViewController {
         } catch {
             print("error loading \(error)")
         }
-       tableView.reloadData()
+        tableView.reloadData()
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -73,7 +85,7 @@ class CategoryTableViewController: UITableViewController {
             
             let newCategory = Category(context: self.context)
             
-            newCategory.name = textField.text
+            newCategory.name = textField.text!
             
             self.categoryArray.append(newCategory)
             
@@ -90,14 +102,6 @@ class CategoryTableViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK: - tableview delegate methods
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //print(itemArray[indexPath.row])
-        
-        
-        //saveItems()
-        
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-    }
+    
+    
 }
