@@ -11,8 +11,6 @@ import RealmSwift
 
 class TodoListViewController: UITableViewController {
     
-    
-    
     var todoItems: Results<Item>?
     var realm = try! Realm()
     var selectedCategory : Category? {
@@ -28,8 +26,6 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(selectedCategory!)
-        
         
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

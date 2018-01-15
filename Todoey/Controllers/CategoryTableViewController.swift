@@ -9,7 +9,10 @@
 import UIKit
 import RealmSwift
 
-class CategoryTableViewController: UITableViewController {
+
+class CategoryTableViewController: SwipeTableViewController {
+    
+    
     
     let realm = try! Realm()
     
@@ -21,6 +24,8 @@ class CategoryTableViewController: UITableViewController {
         super.viewDidLoad()
         
        loadCategories()
+        
+        tableView.rowHeight = 80.0
     }
     //MARK: - tableview data methods
     
@@ -32,14 +37,20 @@ class CategoryTableViewController: UITableViewController {
         return categoryArray?.count ?? 1
     }
     
+//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
+//        cell.delegate = self
+//        return cell
+//    }
+    
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         cell.textLabel?.text = categoryArray?[indexPath.row].name  ?? "no categories yet"
         
-
-        return cell
+       return cell
     }
     
     //MARK: - tableview delegate methods
@@ -76,6 +87,22 @@ class CategoryTableViewController: UITableViewController {
        tableView.reloadData()
     }
     
+    //Mark: delete model
+    
+    override func updateModel(at indexpath: IndexPath) {
+      
+        if let categoryForDeletion = self.categoryArray?[indexpath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(categoryForDeletion)
+                }
+            } catch {
+                print("error deleting category \(error)")
+            }
+        }
+        
+    }
+    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         
@@ -103,3 +130,5 @@ class CategoryTableViewController: UITableViewController {
     
     
 }
+
+
